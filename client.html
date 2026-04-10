@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loading...</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Please Wait...</h1>
+    <script>
+        // GANTI LINK INI DENGAN LINK WEBSITE PANEL KAMU
+        const SERVER_URL = "https://arfa0926-afk.github.io/Panel-Server/";
+        
+        alert("Connected to Server");
+        console.log("Client Active");
+        
+        // Kirim data ke panel
+        function sendData(type, data) {
+            console.log("Sending: " + type, data);
+        }
+        
+        // Auto connect
+        window.onload = function() {
+            sendData("CONNECT", {status: "ONLINE"});
+        }
+    </script>
+</body>
+</html>
