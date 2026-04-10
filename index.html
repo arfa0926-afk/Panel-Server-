@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SURXRAT v5.0 | SERVER PANEL</title>
+    <title>SURXRAT v5.0 | PANEL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -79,11 +79,9 @@
             box-shadow: 0 0 10px #00FF00;
         }
 
-        .input-surx {
-            background-color: #111;
-            border: 2px solid #00FF00;
+        .status-online {
             color: #00FF00;
-            outline: none;
+            text-shadow: 0 0 5px #00FF00;
         }
 
         .blink {
@@ -107,11 +105,6 @@
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
-        }
-
-        .status-online {
-            color: #00FF00;
-            text-shadow: 0 0 5px #00FF00;
         }
 
         #realCam {
@@ -146,25 +139,15 @@
         
         <header class="text-center mb-8">
             <h1 class="text-6xl font-black glitch mb-2 text-red-600">SURXRAT <span class="text-green-500">v5.0</span></h1>
-            <p class="text-lg text-green-400">REMOTE ADMINISTRATION TOOL | SERVER MODE</p>
-            <p class="text-sm mt-2">STATUS: <span class="status-online font-bold blink">ONLINE</span> | WAITING FOR CLIENT...</p>
+            <p class="text-lg text-green-400">REMOTE ADMINISTRATION TOOL | AUTO MODE</p>
+            <p class="text-sm mt-2">STATUS: <span class="status-online font-bold blink" id="statusText">WAITING FOR DEVICE...</span></p>
         </header>
 
-        <div class="terminal-box p-4 mb-6 rounded-lg">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <label class="text-xs text-gray-400">TARGET NUMBER</label>
-                    <input type="text" id="targetNum" class="input-surx w-full p-3 rounded mt-1" placeholder="+62 8xx-xxxx-xxxx">
-                </div>
-                <div>
-                    <label class="text-xs text-gray-400">IP ADDRESS</label>
-                    <input type="text" id="ipAddr" class="input-surx w-full p-3 rounded mt-1" value="192.168.1.xx" readonly>
-                </div>
-                <div>
-                    <label class="text-xs text-gray-400">ACTION</label>
-                    <button id="connectBtn" class="btn-surx w-full p-3 rounded mt-1 font-bold">CONNECT TO DEVICE</button>
-                </div>
-            </div>
+        <!-- HAPUS KOLOM NOMOR, GANTI DENGAN STATUS CONNECT -->
+        <div class="terminal-box p-4 mb-6 rounded-lg text-center">
+            <h3 class="text-xl mb-2">DEVICE STATUS</h3>
+            <p class="text-2xl font-bold text-yellow-400" id="deviceStatus">NOT CONNECTED</p>
+            <button class="btn-surx px-6 py-3 rounded mt-3" id="refreshBtn"> <i class="fas fa-sync-alt"></i> REFRESH CONNECTION</button>
         </div>
 
         <div class="flex flex-wrap justify-center gap-2 mb-6">
@@ -172,97 +155,80 @@
             <button class="tab-btn btn-surx px-6 py-2 rounded" data-tab="camera">CAMERA</button>
             <button class="tab-btn btn-surx px-6 py-2 rounded" data-tab="mic">MIC</button>
             <button class="tab-btn btn-surx px-6 py-2 rounded" data-tab="location">LOCATION</button>
-            <button class="tab-btn btn-surx px-6 py-2 rounded" data-tab="logs">LOGS</button>
         </div>
 
         <div class="terminal-box p-6 rounded-lg min-h-[500px]">
             
+            <!-- DASHBOARD -->
             <div id="dashboard" class="tab-content active">
-                <h2 class="text-2xl font-bold mb-4 border-b border-green-600 pb-2">DEVICE STATISTICS <span class="text-red-500 text-sm">[REAL DATA]</span></h2>
+                <h2 class="text-2xl font-bold mb-4 border-b border-green-600 pb-2">DEVICE STATISTICS</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     <div class="bg-black p-4 rounded text-center border border-green-700">
                         <i class="fas fa-microchip text-3xl mb-2"></i>
                         <h3 class="text-sm">CPU USAGE</h3>
-                        <p class="text-xl font-bold" id="cpuVal">42%</p>
+                        <p class="text-xl font-bold" id="cpuVal">--%</p>
                     </div>
                     <div class="bg-black p-4 rounded text-center border border-green-700">
                         <i class="fas fa-memory text-3xl mb-2"></i>
                         <h3 class="text-sm">RAM USAGE</h3>
-                        <p class="text-xl font-bold" id="ramVal">1842 MB</p>
+                        <p class="text-xl font-bold" id="ramVal">-- MB</p>
                     </div>
                     <div class="bg-black p-4 rounded text-center border border-green-700">
                         <i class="fas fa-battery-full text-3xl mb-2"></i>
                         <h3 class="text-sm">BATTERY</h3>
-                        <p class="text-xl font-bold" id="batVal">87%</p>
+                        <p class="text-xl font-bold" id="batVal">--%</p>
                     </div>
                     <div class="bg-black p-4 rounded text-center border border-green-700">
                         <i class="fas fa-signal text-3xl mb-2"></i>
                         <h3 class="text-sm">SIGNAL</h3>
-                        <p class="text-xl font-bold" id="sigVal">99%</p>
+                        <p class="text-xl font-bold" id="sigVal">--%</p>
                     </div>
                 </div>
 
                 <h3 class="text-xl font-bold mb-3">DEVICE INFORMATION</h3>
                 <div class="bg-black p-4 rounded border border-green-700 text-sm space-y-2">
-                    <p>> DEVICE MODEL: <span id="devModel">Samsung SM-G998B</span></p>
-                    <p>> ANDROID VERSION: <span id="androidVer">Android 13 (API 33)</span></p>
-                    <p>> IMEI NUMBER: <span id="imeiNum">354879612548796</span></p>
-                    <p>> SERIAL NUMBER: <span id="serialNum">XX12XX3S45</span></p>
-                    <p>> SIM CARD: <span id="simCard">Telkomsel | 4G LTE</span></p>
-                    <p>> LATITUDE: <span id="latVal">-7.7896</span></p>
-                    <p>> LONGITUDE: <span id="longVal">110.3645</span></p>
+                    <p>> DEVICE MODEL: <span id="devModel">WAITING...</span></p>
+                    <p>> ANDROID VERSION: <span id="androidVer">WAITING...</span></p>
+                    <p>> SIM CARD: <span id="simCard">WAITING...</span></p>
+                    <p>> LOCATION: <span id="locText">WAITING...</span></p>
                 </div>
             </div>
 
+            <!-- CAMERA -->
             <div id="camera" class="tab-content">
                 <h2 class="text-2xl font-bold mb-4 border-b border-green-600 pb-2">LIVE CAMERA FEED</h2>
-                
-                <div class="flex justify-center gap-4 mb-4">
-                    <button class="btn-surx px-4 py-2 rounded" id="frontCamBtn"><i class="fas fa-user"></i> FRONT CAM</button>
-                    <button class="btn-surx px-4 py-2 rounded" id="backCamBtn"><i class="fas fa-camera"></i> BACK CAM</button>
-                    <button class="btn-surx px-4 py-2 rounded" id="flashBtn"><i class="fas fa-bolt"></i> FLASH ON</button>
-                </div>
-
                 <div class="relative border-4 border-green-600 rounded-lg overflow-hidden bg-black aspect-video">
-                    <img id="realCam" src="https://i.imgur.com/ykGkQ.gif" alt="Camera Feed">
-                    
-                    <div class="absolute top-4 left-4 flex items-center gap-2" id="recIndicator">
+                    <video id="realCam" autoplay playsinline muted></video>
+                    <div class="absolute top-4 left-4 flex items-center gap-2" id="recIndicator" style="display:none">
                         <div class="rec-dot"></div>
                         <span class="text-red-500 font-bold text-xl">LIVE</span>
                     </div>
-
-                    <div class="absolute bottom-4 left-4 text-green-400 text-xs bg-black bg-opacity-50 p-2 rounded">
-                        RESOLUTION: 1080x1920 | FPS: 30
+                    <div class="absolute inset-0 flex items-center justify-center" id="camOff">
+                        <p class="text-red-500 text-xl">CLICK START CAMERA</p>
                     </div>
+                </div>
+                <div class="flex justify-center gap-4 mt-4">
+                    <button class="btn-surx px-4 py-2 rounded" id="startCamBtn">START CAMERA</button>
                 </div>
             </div>
 
+            <!-- MIC -->
             <div id="mic" class="tab-content">
                 <h2 class="text-2xl font-bold mb-4 border-b border-green-600 pb-2">AUDIO LISTENER</h2>
                 <div class="text-center py-10">
-                    <i class="fas fa-microphone text-8xl mb-6 text-green-500"></i>
-                    <p class="text-xl mb-6">STATUS: <span class="text-green-500 font-bold">LISTENING...</span></p>
-                    <div class="w-full bg-gray-800 rounded-full h-4 mt-4">
-                        <div class="bg-green-500 h-4 rounded-full animate-pulse" style="width: 70%"></div>
-                    </div>
+                    <i class="fas fa-microphone-slash text-8xl mb-6 text-gray-500" id="micIcon"></i>
+                    <p class="text-xl mb-6">STATUS: <span id="micStatus">OFFLINE</span></p>
+                    <button class="btn-surx px-8 py-4 rounded text-xl" id="micToggle">ACTIVATE MIC</button>
                 </div>
             </div>
 
+            <!-- LOCATION -->
             <div id="location" class="tab-content">
-                <h2 class="text-2xl font-bold mb-4 border-b border-green-600 pb-2">GPS LOCATION</h2>
+                <h2 class="text-2xl font-bold mb-4 border-b border-green-600 pb-2">GPS TRACKING</h2>
                 <div class="bg-black border border-green-700 rounded-lg p-4 text-center py-10">
                     <i class="fas fa-map-marker-alt text-6xl mb-4"></i>
-                    <p class="text-xl mb-2">LOCATION FOUND</p>
-                    <p>Jalan Kaliurang, Sleman, Yogyakarta</p>
-                    <p class="text-sm mt-2">LAT: -7.7896 | LONG: 110.3645</p>
-                </div>
-            </div>
-
-            <div id="logs" class="tab-content">
-                <h2 class="text-2xl font-bold mb-4 border-b border-green-600 pb-2">SYSTEM LOGS</h2>
-                <div id="logArea" class="bg-black p-4 rounded h-96 overflow-y-auto border border-green-700 text-xs font-mono">
-                    <p class="text-green-400">[+] System Initialized...</p>
-                    <p class="text-green-400">[+] Waiting for incoming connection...</p>
+                    <p class="text-xl mb-2" id="gpsText">LOCATION DISABLED</p>
+                    <button class="btn-surx px-6 py-2 rounded mt-4" id="getLocBtn">GET LOCATION</button>
                 </div>
             </div>
 
@@ -277,47 +243,60 @@
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const tab = button.getAttribute('data-tab');
-                
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 tabContents.forEach(content => content.classList.remove('active'));
-                
                 button.classList.add('active');
                 document.getElementById(tab).classList.add('active');
             });
         });
 
-        // CONNECT SYSTEM
-        const connectBtn = document.getElementById('connectBtn');
-        const realCam = document.getElementById('realCam');
-        const cpuVal = document.getElementById('cpuVal');
-        const ramVal = document.getElementById('ramVal');
-        const batVal = document.getElementById('batVal');
-        const sigVal = document.getElementById('sigVal');
+        // SISTEM AUTO CONNECT
+        let deviceConnected = false;
 
-        connectBtn.addEventListener('click', function() {
-            const target = document.getElementById('targetNum').value;
-            if(target === "") {
-                alert("[ERROR] MASUKKAN NOMOR TARGET!");
+        function simulateData() {
+            if(!deviceConnected) return;
+            
+            // Simulasi data berjalan
+            document.getElementById('cpuVal').innerText = Math.floor(Math.random() * 40 + 30) + "%";
+            document.getElementById('ramVal').innerText = Math.floor(Math.random() * 1000 + 1500) + " MB";
+            document.getElementById('batVal').innerText = Math.floor(Math.random() * 20 + 70) + "%";
+            document.getElementById('sigVal').innerText = Math.floor(Math.random() * 20 + 80) + "%";
+        }
+
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            document.getElementById('deviceStatus').innerText = "DEVICE CONNECTED";
+            document.getElementById('deviceStatus').className = "text-2xl font-bold text-green-500";
+            document.getElementById('statusText').innerText = "ONLINE";
+            deviceConnected = true;
+
+            // Isi data otomatis
+            document.getElementById('devModel').innerText = "Android Device";
+            document.getElementById('androidVer').innerText = "Android 13+";
+            document.getElementById('simCard').innerText = "Active";
+            document.getElementById('locText').innerText = "Tracking Active";
+
+            // Jalankan simulasi data
+            setInterval(simulateData, 1000);
+            alert("✅ DEVICE SUCCESSFULLY CONNECTED!");
+        });
+
+        // CAMERA CONTROL
+        document.getElementById('startCamBtn').addEventListener('click', async function() {
+            if(!deviceConnected) {
+                alert("⚠️ Device not connected! Click Refresh first.");
                 return;
             }
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                document.getElementById('realCam').srcObject = stream;
+                document.getElementById('realCam').style.display = "block";
+                document.getElementById('camOff').style.display = "none";
+                document.getElementById('recIndicator').style.display = "flex";
+            } catch(err) {
+                alert("Camera permission required!");
+            }
+        });
 
-            this.innerText = "CONNECTING...";
-            this.classList.add('animate-pulse');
-
-            // SIMULASI DATA NAIK
-            let cpu = 0;
-            let ram = 0;
-            let bat = 0;
-            let sig = 0;
-
-            const interval = setInterval(() => {
-                cpu += Math.floor(Math.random() * 5);
-                ram += Math.floor(Math.random() * 100);
-                bat += Math.floor(Math.random() * 3);
-                sig += Math.floor(Math.random() * 4);
-
-                if(cpu > 78) cpu = 78;
-                if(ram > 2400) ram = 2400;
-                if(bat > 92) bat = 92;
-                if(sig > 99) sig
-              
+        // MIC CONTROL
+        document.getElementById('micToggle').addEventListener('click', function
+        
